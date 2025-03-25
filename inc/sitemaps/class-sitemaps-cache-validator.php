@@ -185,8 +185,8 @@ class WPSEO_Sitemaps_Cache_Validator {
 		 * We can't use `esc_like` here because we need the % in the query.
 		 */
 		$where   = [];
-		$where[] = sprintf( "option_name LIKE '%s'", addcslashes( '_transient_' . $like, '_' ) );
-		$where[] = sprintf( "option_name LIKE '%s'", addcslashes( '_transient_timeout_' . $like, '_' ) );
+		$where[] = addcslashes('_transient_' . $like, '_');
+		$where[] = addcslashes('_transient_timeout_' . $like, '_');
 
 		// Delete transients.
 		//phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- We need to use a direct query here.
@@ -194,7 +194,7 @@ class WPSEO_Sitemaps_Cache_Validator {
 		$wpdb->query(
 			$wpdb->prepare(
 			//phpcs:disable WordPress.DB.PreparedSQLPlaceholders -- %i placeholder is still not recognized.
-				'DELETE FROM %i WHERE ' . implode( ' OR ', array_fill( 0, count( $where ), '%s' ) ),
+				'DELETE FROM %i WHERE ' . implode( ' OR ', array_fill( 0, count( $where ), 'option_name LIKE %s' ) ),
 				array_merge( [ $wpdb->options ], $where )
 			)
 		);
